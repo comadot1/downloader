@@ -177,6 +177,7 @@ class LogicPikPak(object):
                 socketio.emit('notify', data, namespace='/framework', broadcast=True)
                 return
             else:
+                logger.debug('CCCCCCCCCCCCCCCCCCCCCheck Point!!!!!!')
                 logger.debug(f'[PikPak 로그인성공] {ModelSetting.get("pikpak_username")}')
 
             try:
