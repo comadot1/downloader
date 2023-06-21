@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div>
+  {{ macros.m_button_group([['global_setting_save_btn', '설정 저장']])}}
+  {{ macros.m_row_start('5') }}
+  {{ macros.m_row_end() }}
+  <nav>
+    {{ macros.m_tab_head_start() }}
+      {{ macros.m_tab_head2('normal', '일반', true) }}
+      {{ macros.m_tab_head2('etc', '기타', false) }}
+    {{ macros.m_tab_head_end() }}
+  </nav>
+  <form id='setting' name='setting'>
+  <div class="tab-content" id="nav-tabContent">
+    {{ macros.m_tab_content_start('normal', true) }}
+      {{ macros.setting_global_scheduler_button(arg['scheduler'], arg['is_running']) }}
+      {{ macros.setting_input_text('interval', '스케쥴링 실행 정보', value=arg['interval'], col='3', desc=['Inverval(minute 단위)이나 Cron 설정']) }}
+      {{ macros.setting_checkbox('auto_start', '시작시 자동실행', value=arg['auto_start'], desc='On : 시작시 자동으로 스케쥴러에 등록됩니다.') }}
+      {{ macros.setting_checkbox('auto_remove_completed', '프로그램에서 완료 목록 삭제', value=arg['auto_remove_completed'], desc='On : 스케쥴러 동작시 혹은 상태 화면 요청시 삭제합니다.') }}
+      {{ macros.setting_checkbox('download_completed_telegram_notify', '프로그램에서 완료 목록 삭제시 알림', value=arg['download_completed_telegram_notify'], desc=['On : "프로그램에서 완료 목록 삭제"가 On 되어 있는 경우 삭제시 알림을 보냅니다.', 'ID : downloader_completed_remove']) }}
+      {{ macros.setting_input_int('status_interval', '상태 화면 갱신 주기', value=arg['status_interval'], min='1', placeholder='5', desc='second 단위') }}
+      {{ macros.setting_radio('default_torrent_program', '기본 토렌트 프로그램', ['트랜스미션', '다운로드 스테이션', '큐빗토렌트', 'aria2', 'PikPak'], value=arg['default_torrent_program']) }}
+      <!--added-->
+      {{ macros.setting_checkbox('use_download_name', '마그넷에 이름 추가', value=arg['use_download_name'], desc=['On : 마그넷 정보에 토렌트 이름을 추가합니다.', 
+      '이치로님의 torrent_info플러그인이 설치되어있어야 합니다.',
+      '마그넷 추가 시에 약간 시간이 걸릴 수 있습니다.']) }}
+      {{ macros.setting_checkbox('use_tracker', '트래커 자동 추가', value=arg['use_tracker'], desc=['On : 토렌트 추가 시 트래커를 자동으로 추가합니다.']) }}
+      <div id="use_tracker_div" class="collapse">
+        {{ macros.setting_input_textarea('tracker_list_manual', '트래커 목록', value=arg['tracker_list_manual'], desc=['기본 트래커를 포함해서 이 목록도 추가됩니다. 구분자 엔터']) }}
+        {{ macros.info_text("", '', value='아래 기본 트래커를 자동으로 추가합니다. (매일 갱신)', desc=arg['tracker_list']) }}
+      </div>
+      <!--added-->
+      {{ macros.m_hr() }}
+      {{ macros.setting_checkbox('use_share_upload', '공유 제공용 다운로드', value=arg['use_share_upload'], desc=['On : 봇 다운로드시 공유 제공용 다운로드입니다. 토렌트 정보에 있는 server id 값으로 폴더를 생성하고 그 안에 데이터를 받습니다.']) }}
+      <div id="use_share_upload_div" class="collapse">
+        {{ macros.setting_input_text('use_share_upload_make_dir_rule', '다운로드 폴더 변환 룰', value=arg['use_share_upload_make_dir_rule'], desc=['토렌트 프로그램 입장에서의 다운로드 폴더|앞 폴더의 SJVA상의 이름', '변환 후 server id 폴더를 생성', '동일할 경우 생략']) }}
+      </div>
+    {{ macros.m_tab_content_end() }}
+
+    {{ macros.m_tab_content_start('etc', false) }}
+      {{ macros.setting_button([['global_one_execute_btn', '1회 실행']], left='1회 실행' ) }}
+      {{ macros.setting_button([['global_reset_db_btn', '목록 초기화']], left='DB정리' ) }}
+    {{ macros.m_tab_content_end() }}
+  </div><!--tab-content-->
+  </form>
+</div> <!--전체-->
+
+<script type="text/javascript">
+var package_name = "{{arg['package_name'] }}";
+var current_data = null;
+
+$(document).ready(function(){
+  use_collapse('use_tracker');
+  use_collapse('use_share_upload');
+});
+
+$('#use_tracker').change(function () {
+  use_collapse('use_tracker');
+});
+$('#use_share_upload').change(function () {
+  use_collapse('use_share_upload');
+});
+
+$(document).ready(function(){
+});
+
+</script>    
+{% endblock %}
